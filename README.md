@@ -42,3 +42,4 @@ npm run dev
 ---
 Happy coding! 🚀
 # next-auth-template
+# next-auth-template
