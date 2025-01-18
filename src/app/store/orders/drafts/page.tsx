@@ -1,4 +1,4 @@
-import DraftOrdersPage from "@/components/pages/admin/Orders/Drafts/DraftPage";
+import DraftOrdersPage from "@/components/pages/store/Orders/Drafts/DraftPage";
 import React from "react";
 
 function page() {

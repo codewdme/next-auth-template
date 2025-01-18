@@ -1,4 +1,4 @@
-import OrdersPage from "@/components/pages/admin/Orders/OrdersPage";
+import OrdersPage from "@/components/pages/store/Orders/OrdersPage";
 import React from "react";
 
 function page() {

@@ -1,4 +1,4 @@
-import Settings from "@/components/pages/admin/Settings";
+import Settings from "@/components/pages/store/Settings";
 import React from "react";
 
 function page() {

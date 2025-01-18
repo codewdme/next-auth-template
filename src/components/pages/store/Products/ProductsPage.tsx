@@ -1,0 +1,52 @@
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { AddProductDialog } from "./AddProductDialog";
+import { ProductList } from "./ProductList";
+
+export default function ProductsPage() {
+  return (
+    <div className="container mx-auto p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">Products</h1>
+        <AddProductDialog />
+      </div>
+
+      <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <Input
+          type="text"
+          placeholder="Search products..."
+          className="w-full sm:max-w-sm"
+        />
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="secondary" className="flex-1 sm:flex-none">
+            Sort
+          </Button>
+          <Button variant="secondary" className="flex-1 sm:flex-none">
+            Filter
+          </Button>
+        </div>
+      </div>
+
+      <ProductList />
+
+      <div className="mt-4 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 justify-between">
+        <Button variant="secondary" asChild className="w-full sm:w-auto">
+          <Link href="/products/collections">Collections</Link>
+        </Button>
+        <Button variant="secondary" asChild className="w-full sm:w-auto">
+          <Link href="/products/inventory">Inventory</Link>
+        </Button>
+        <Button variant="secondary" asChild className="w-full sm:w-auto">
+          <Link href="/products/purchase-orders">Purchase Orders</Link>
+        </Button>
+        <Button variant="secondary" asChild className="w-full sm:w-auto">
+          <Link href="/products/transfers">Transfers</Link>
+        </Button>
+        <Button variant="secondary" asChild className="w-full sm:w-auto">
+          <Link href="/products/gift-cards">Gift Cards</Link>
+        </Button>
+      </div>
+    </div>
+  );
+}

@@ -1,10 +1,9 @@
-import OrdersPage from "@/components/pages/admin/Orders/OrdersPage";
 import React from "react";
 
 function page() {
   return (
     <div>
-      <OrdersPage />
+      <ProductsPage />
     </div>
   );
 }

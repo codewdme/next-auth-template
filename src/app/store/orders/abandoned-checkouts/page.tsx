@@ -1,4 +1,4 @@
-import AbandonedCheckoutsPage from "@/components/pages/admin/Orders/Abandoned-Checkouts/AbandonedCheckoutsPage";
+import AbandonedCheckoutsPage from "@/components/pages/store/Orders/Abandoned-Checkouts/AbandonedCheckoutsPage";
 import React from "react";
 
 function page() {
