@@ -15,11 +15,13 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  password      String?
   // Optional for WebAuthn support
   Authenticator Authenticator[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  isStoreOwner  Boolean?        @default(false)
+  Store         Store[]
 }
 
 model Account {
@@ -75,4 +77,132 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+//store models
+
+model Store {
+  id         String @id @default(cuid())
+  name       String
+  masterUser User   @relation(fields: [userId], references: [id])
+  userId     String
+}
+
+model Customer {
+  id           String            @id @default(cuid())
+  name         String
+  email        String            @unique
+  phone        String?
+  password     String?
+  orders       Order[]
+  giftCards    GiftCard[]
+  storeBalance Int               @default(0)
+  addresses    ShippingAddress[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model ShippingAddress {
+  id         String    @id @default(cuid())
+  orderId    String
+  street     String
+  city       String
+  state      String
+  postalCode String
+  country    String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  Order      Order[]
+  Customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId String?
+}
+
+model Order {
+  id                String          @id @default(cuid())
+  customerId        String
+  customer          Customer        @relation(fields: [customerId], references: [id])
+  items             OrderItem[]
+  totalAmount       Float
+  status            OrderStatus     @default(PENDING)
+  paymentId         String?
+  shippingAddress   ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  placedAt          DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  shippingAddressId String
+}
+
+model OrderItem {
+  id         String @id @default(cuid())
+  orderId    String
+  order      Order  @relation(fields: [orderId], references: [id])
+  productId  String
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  orderId   String
+  amount    Float
+  method    PaymentMethod
+  status    PaymentStatus @default(PENDING)
+  paidAt    DateTime?
+  createdAt DateTime      @default(now())
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+  RETURNED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  BANK_TRANSFER
+  CASH_ON_DELIVERY
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model Product {
+  id           String      @id @default(cuid())
+  name         String
+  description  String?
+  price        Float
+  stock        Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  Collection   Collection? @relation(fields: [collectionId], references: [id])
+  collectionId String?
+}
+
+model Collection {
+  id          String    @id @default(cuid())
+  name        String
+  tags        String[]
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model GiftCard {
+  id         String    @id @default(cuid())
+  code       String    @unique
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+  redeemedAt DateTime? // Nullable to indicate it might not be redeemed
+  Customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId String?
 }

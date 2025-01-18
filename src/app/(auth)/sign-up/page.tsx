@@ -8,7 +8,7 @@ import { auth } from "@/lib/auth";
 
 const Page = async () => {
   const session = await auth();
-  if (session) redirect("/");
+  if (session) redirect("/store/dashboard");
 
   return (
     <div className="w-full max-w-sm mx-auto space-y-6">
@@ -33,6 +33,7 @@ const Page = async () => {
         action={async (formData) => {
           "use server";
           const res = await signUp(formData);
+          console.log(res);
           if (res.success) {
             redirect("/sign-in");
           }
