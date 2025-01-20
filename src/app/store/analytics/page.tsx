@@ -1,7 +1,5 @@
-import React from "react";
+import AnalyticsPage from "@/components/pages/store/Analytics/AnalyticsPage";
 
-function page() {
-  return <div>page</div>;
+export default function Page() {
+  return <AnalyticsPage />;
 }
-
-export default page;

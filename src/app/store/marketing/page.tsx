@@ -1,7 +1,5 @@
-import React from "react";
+import MarketingPage from "@/components/pages/store/Marketing/MarketingPage";
 
-function page() {
-  return <div>page</div>;
+export default function Page() {
+  return <MarketingPage />;
 }
-
-export default page;

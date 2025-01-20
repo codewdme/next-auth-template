@@ -15,15 +15,53 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Session } from "next-auth";
+import { usePathname } from "next/navigation";
 import React from "react";
+
+const breadcrumbMap: Record<string, { label: string; parent?: string }> = {
+  "/store": { label: "Store Dashboard" },
+  "/store/analytics": { label: "Analytics", parent: "Store Dashboard" },
+  "/store/analytics/reports": { label: "Reports", parent: "Analytics" },
+  "/store/analytics/live": { label: "Live View", parent: "Analytics" },
+  "/store/content": { label: "Content", parent: "Store Dashboard" },
+  "/store/content/files": { label: "Files", parent: "Content" },
+  "/store/content/metaobjects": { label: "Metaobjects", parent: "Content" },
+  "/store/content/menus": { label: "Menus", parent: "Content" },
+};
 
 export default function AdminLayout({
   children,
-  session,
 }: {
   children: React.ReactNode;
-  session: Session;
+  session?: Session;
 }) {
+  const pathname = usePathname();
+  const currentPath = breadcrumbMap[pathname];
+
+  const getBreadcrumbItems = () => {
+    if (!currentPath) return [];
+
+    const items = [{ label: currentPath.label, path: pathname }];
+    let parent = currentPath.parent;
+
+    while (parent) {
+      const parentPath = Object.entries(breadcrumbMap).find(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ([_, value]) => value.label === parent
+      );
+      if (parentPath) {
+        items.unshift({ label: parent, path: parentPath[0] });
+        parent = breadcrumbMap[parentPath[0]].parent;
+      } else {
+        break;
+      }
+    }
+
+    return items;
+  };
+
+  const breadcrumbItems = getBreadcrumbItems();
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -34,15 +72,22 @@ export default function AdminLayout({
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
+                {breadcrumbItems.map((item, index) => (
+                  <React.Fragment key={item.path}>
+                    <BreadcrumbItem>
+                      {index === breadcrumbItems.length - 1 ? (
+                        <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink href={item.path}>
+                          {item.label}
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                    {index < breadcrumbItems.length - 1 && (
+                      <BreadcrumbSeparator />
+                    )}
+                  </React.Fragment>
+                ))}
               </BreadcrumbList>
             </Breadcrumb>
           </div>

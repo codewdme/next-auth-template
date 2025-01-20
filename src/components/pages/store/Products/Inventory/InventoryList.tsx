@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { LowStockAlertDialog } from "./LowStockAlertDialog";
 
 const inventory = [
   {
@@ -57,6 +58,7 @@ export function InventoryList() {
               <TableHead>Incoming Stock</TableHead>
               <TableHead>Location</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -75,6 +77,13 @@ export function InventoryList() {
                     <Badge variant="secondary">In Stock</Badge>
                   )}
                 </TableCell>
+                <TableCell>
+                  <LowStockAlertDialog
+                    productId={item.id}
+                    productName={item.name}
+                    currentThreshold={item.lowStockAlert}
+                  />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -92,12 +101,17 @@ export function InventoryList() {
               <p className="text-sm">Low Stock Alert: {item.lowStockAlert}</p>
               <p className="text-sm">Incoming: {item.incomingStock}</p>
               <p className="text-sm">Location: {item.location}</p>
-              <div className="mt-2">
+              <div className="mt-2 flex justify-between items-center">
                 {item.stockLevel <= item.lowStockAlert ? (
                   <Badge variant="destructive">Low Stock</Badge>
                 ) : (
                   <Badge variant="secondary">In Stock</Badge>
                 )}
+                <LowStockAlertDialog
+                  productId={item.id}
+                  productName={item.name}
+                  currentThreshold={item.lowStockAlert}
+                />
               </div>
             </CardContent>
           </Card>

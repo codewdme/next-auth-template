@@ -1,7 +1,5 @@
-import React from "react";
+import ContentPage from "@/components/pages/store/Content/ContentPage";
 
-function page() {
-  return <div>page</div>;
+export default function Page() {
+  return <ContentPage />;
 }
-
-export default page;

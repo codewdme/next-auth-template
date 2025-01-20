@@ -9,7 +9,9 @@ export default function InventoryPage() {
     <div className="container mx-auto p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold">Inventory</h1>
-        <StockAdjustmentDialog />
+        <div className="flex gap-2">
+          <StockAdjustmentDialog />
+        </div>
       </div>
 
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

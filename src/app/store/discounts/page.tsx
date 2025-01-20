@@ -1,7 +1,5 @@
-import React from "react";
+import DiscountsPage from "@/components/pages/store/Discounts/DiscountsPage";
 
-function page() {
-  return <div>page</div>;
+export default function Page() {
+  return <DiscountsPage />;
 }
-
-export default page;
