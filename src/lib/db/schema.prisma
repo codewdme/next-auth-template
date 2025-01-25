@@ -101,7 +101,7 @@ enum CustomerSegment {
 
 model ShippingAddress {
   id         String    @id @default(cuid())
-  orderId    String
+  orderId    String?
   street     String
   city       String
   state      String

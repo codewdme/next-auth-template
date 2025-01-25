@@ -4,7 +4,7 @@ import { CampaignsList } from "./CampaignsList";
 import { CreateCampaignDialog } from "./CreateCampaignDialog";
 import { CampaignFilters } from "./CampaignFilters";
 import { useAppSelector, useAppDispatch } from "@/lib/redux/hooks";
-import { setSelectedCampaigns } from "@/lib/redux/slices/campaignsSlice";
+import { setSelectedCampaigns } from "@/lib/redux/slices/(yet to configure)/campaignsSlice";
 
 export default function CampaignsPage() {
   const selectedCampaigns = useAppSelector(

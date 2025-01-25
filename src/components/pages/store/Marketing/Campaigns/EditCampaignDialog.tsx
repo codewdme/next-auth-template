@@ -24,7 +24,7 @@ import { useAppDispatch } from "@/lib/redux/hooks";
 import {
   updateCampaign,
   type Campaign,
-} from "@/lib/redux/slices/campaignsSlice";
+} from "@/lib/redux/slices/(yet to configure)/campaignsSlice";
 import { notifications } from "@/components/ui/notifications";
 
 interface EditCampaignDialogProps {

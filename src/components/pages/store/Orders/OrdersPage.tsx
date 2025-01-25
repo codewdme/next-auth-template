@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,50 +38,10 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { EditOrderForm } from "./Drafts/EditOrderForm";
 import { ViewOrderDialog } from "./Drafts/ViewOrderDialog";
+import axios from "axios";
+import { Order } from "@prisma/client";
 
 // Sample order data
-const orders = [
-  {
-    id: 1,
-    number: "ORD001",
-    customer: "John Doe",
-    date: "2023-06-01",
-    total: "$150.00",
-    status: "Completed",
-  },
-  {
-    id: 2,
-    number: "ORD002",
-    customer: "Jane Smith",
-    date: "2023-06-02",
-    total: "$200.00",
-    status: "Processing",
-  },
-  {
-    id: 3,
-    number: "ORD003",
-    customer: "Bob Johnson",
-    date: "2023-06-03",
-    total: "$100.00",
-    status: "Shipped",
-  },
-  {
-    id: 4,
-    number: "ORD004",
-    customer: "Alice Brown",
-    date: "2023-06-04",
-    total: "$300.00",
-    status: "Pending",
-  },
-  {
-    id: 5,
-    number: "ORD005",
-    customer: "Charlie Wilson",
-    date: "2023-06-05",
-    total: "$250.00",
-    status: "Completed",
-  },
-];
 
 export default function OrdersPage() {
   const [dateRange, setDateRange] = useState("all");
@@ -107,6 +67,25 @@ export default function OrdersPage() {
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    // Fetch orders from the API
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get("/api/fetch-orders");
+        setOrders(response.data.data); // Assuming the API returns an array of orders
+      } catch (err) {
+        alert("Failed to fetch orders");
+        console.error(err);
+      } finally {
+        console.log("data fetched");
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   return (
     <div className="container mx-auto p-6">
@@ -183,10 +162,10 @@ export default function OrdersPage() {
         <TableBody>
           {orders.map((order) => (
             <TableRow key={order.id}>
-              <TableCell>{order.number}</TableCell>
-              <TableCell>{order.customer}</TableCell>
-              <TableCell>{order.date}</TableCell>
-              <TableCell>{order.total}</TableCell>
+              <TableCell>{order.id.slice(0, 6)}...</TableCell>
+              <TableCell>{order.customer?.name}</TableCell>
+              <TableCell>{order.placedAt}</TableCell>
+              <TableCell>{order.totalAmount}</TableCell>
               <TableCell>
                 <Badge className={getStatusColor(order.status)}>
                   {order.status}
@@ -201,12 +180,12 @@ export default function OrdersPage() {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Edit Order {order.number}</DialogTitle>
+                      <DialogTitle>Edit Order {order.id}</DialogTitle>
                       <DialogDescription>
                         Make changes to the order details.
                       </DialogDescription>
                     </DialogHeader>
-                    <EditOrderForm order={order} />
+                    <EditOrderForm orderData={order} />
                   </DialogContent>
                 </Dialog>
                 <ViewOrderDialog order={order} />

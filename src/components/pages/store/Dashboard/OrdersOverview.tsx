@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -7,40 +10,53 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const ordersData = {
-  pending: [
-    { id: "ORD001", customer: "John Doe", total: "$129.99", status: "Pending" },
-    {
-      id: "ORD002",
-      customer: "Jane Smith",
-      total: "$79.99",
-      status: "Pending",
-    },
-    {
-      id: "ORD003",
-      customer: "Bob Johnson",
-      total: "$199.99",
-      status: "Pending",
-    },
-  ],
-  fulfilled: [
-    {
-      id: "ORD004",
-      customer: "Alice Brown",
-      total: "$59.99",
-      status: "Fulfilled",
-    },
-    {
-      id: "ORD005",
-      customer: "Charlie Wilson",
-      total: "$149.99",
-      status: "Fulfilled",
-    },
-  ],
-};
+import { Order } from "@prisma/client";
+import axios from "axios";
 
 export default function OrdersOverview() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch orders from the API
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get("/api/fetch-orders");
+        setOrders(response.data.data); // Assuming the API returns an array of orders
+      } catch (err) {
+        setError("Failed to fetch orders");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Orders Overview</CardTitle>
+        </CardHeader>
+        <CardContent>Loading...</CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Orders Overview</CardTitle>
+        </CardHeader>
+        <CardContent>{error}</CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="">
       <CardHeader>
@@ -60,17 +76,21 @@ export default function OrdersOverview() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {ordersData.pending.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell>{order.id}</TableCell>
-                    <TableCell>{order.customer}</TableCell>
-                    <TableCell>{order.total}</TableCell>
-                    <TableCell>{order.status}</TableCell>
-                  </TableRow>
-                ))}
+                {orders.length !== 0 &&
+                  orders
+                    .filter((order) => order.status === "PENDING")
+                    .map((order) => (
+                      <TableRow key={order.id}>
+                        <TableCell>{order.id}</TableCell>
+                        <TableCell>{order.customerId}</TableCell>
+                        <TableCell>{order.totalAmount}</TableCell>
+                        <TableCell>{order.status}</TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </div>
+
           <div>
             <h3 className="text-lg font-semibold">Fulfilled Orders</h3>
             <Table>
@@ -83,14 +103,17 @@ export default function OrdersOverview() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {ordersData.fulfilled.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell>{order.id}</TableCell>
-                    <TableCell>{order.customer}</TableCell>
-                    <TableCell>{order.total}</TableCell>
-                    <TableCell>{order.status}</TableCell>
-                  </TableRow>
-                ))}
+                {orders.length !== 0 &&
+                  orders
+                    .filter((order) => order.status === "DELIVERED")
+                    .map((order) => (
+                      <TableRow key={order.id}>
+                        <TableCell>{order.id}</TableCell>
+                        <TableCell>{order.customerId}</TableCell>
+                        <TableCell>{order.totalAmount}</TableCell>
+                        <TableCell>{order.status}</TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </div>

@@ -21,7 +21,7 @@ import {
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { addCampaign } from "@/lib/redux/slices/campaignsSlice";
+import { addCampaign } from "@/lib/redux/slices/(yet to configure)/campaignsSlice";
 import { notifications } from "@/components/ui/notifications";
 import { v4 as uuidv4 } from "uuid";
 

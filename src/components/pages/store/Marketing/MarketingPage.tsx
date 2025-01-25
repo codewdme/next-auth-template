@@ -9,7 +9,7 @@ import { CreateAutomationDialog } from "./Automations/CreateAutomationDialog";
 import { CreateCampaignDialog } from "./Campaigns/CreateCampaignDialog";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { Automation } from "@/lib/redux/slices/automationsSlice";
-import { Campaign } from "@/lib/redux/slices/campaignsSlice";
+import { Campaign } from "@/lib/redux/slices/(yet to configure)/campaignsSlice";
 
 export default function MarketingPage() {
   const campaigns = useAppSelector((state) => state.campaigns.campaigns);

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "@/app/globals.css";
 import { ReactNode } from "react";
 import { Toaster } from "@/components/ui/toaster";
-import { ReduxProvider } from "@/providers/ReduxProvider";
 
 // Import Lato font
 import { Lato } from "next/font/google";
@@ -26,10 +25,8 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <html lang="en">
       <body className={`${lato.variable} antialiased`}>
-        <ReduxProvider>
-          <main>{children}</main>
-          <Toaster />
-        </ReduxProvider>
+        <main>{children}</main>
+        <Toaster />
       </body>
     </html>
   );
