@@ -36,6 +36,7 @@ export default function AdminLayout({
   session?: Session;
 }) {
   const pathname = usePathname();
+
   const currentPath = breadcrumbMap[pathname];
 
   const getBreadcrumbItems = () => {
@@ -64,7 +65,7 @@ export default function AdminLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar pathname={pathname} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">

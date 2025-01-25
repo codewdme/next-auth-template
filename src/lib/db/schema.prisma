@@ -12,7 +12,7 @@ model User {
   name          String?
   email         String          @unique
   emailVerified DateTime?
-  image         String?
+  image         String?         @default("https://i.ibb.co/BVsM1f6/product-placeholder.jpg")
   accounts      Account[]
   sessions      Session[]
   password      String?
@@ -21,7 +21,6 @@ model User {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   isStoreOwner  Boolean?        @default(false)
-  Store         Store[]
 }
 
 model Account {
@@ -79,27 +78,25 @@ model Authenticator {
   @@id([userId, credentialID])
 }
 
-//store models
-
-model Store {
-  id         String @id @default(cuid())
-  name       String
-  masterUser User   @relation(fields: [userId], references: [id])
-  userId     String
+model Customer {
+  id              String            @id @default(cuid())
+  name            String
+  email           String            @unique
+  phone           String?
+  password        String?
+  customerSegment CustomerSegment   @default(NEW)
+  orders          Order[]
+  storeBalance    Int               @default(0)
+  addresses       ShippingAddress[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 }
 
-model Customer {
-  id           String            @id @default(cuid())
-  name         String
-  email        String            @unique
-  phone        String?
-  password     String?
-  orders       Order[]
-  giftCards    GiftCard[]
-  storeBalance Int               @default(0)
-  addresses    ShippingAddress[]
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+enum CustomerSegment {
+  NEW //SPENT LESS THAN 10000rs. AND IN LAST 30 DAYS
+  LOYAL //SPENT BETWEEN 10000rs. AND 50000rs. AVERAGE ORDER VALUE OF 5000rs.
+  VIP //SPENT MORE THAN 50000rs. AVERAGE ORDER VALUE OF 20000rs.
+  VVIP //SPENT MORE THAN 100000rs. AVERAGE ORDER VALUE OF 50000rs.
 }
 
 model ShippingAddress {
@@ -176,15 +173,26 @@ enum PaymentStatus {
 }
 
 model Product {
-  id           String      @id @default(cuid())
-  name         String
-  description  String?
-  price        Float
-  stock        Int
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  Collection   Collection? @relation(fields: [collectionId], references: [id])
-  collectionId String?
+  id            String        @id @default(cuid())
+  name          String
+  images        String[]      @default(["https://i.ibb.co/BVsM1f6/product-placeholder.jpg"])
+  status        ProductStatus @default(DRAFT)
+  description   String[]
+  price         Float
+  currency      Currency      @default(INR)
+  stock         Int
+  stockAlertQty Int?          @default(5)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  Collection    Collection?   @relation(fields: [collectionId], references: [id])
+  collectionId  String?
+}
+
+enum Currency {
+  USD
+  EUR
+  GBP
+  INR
 }
 
 model Collection {
@@ -200,9 +208,67 @@ model Collection {
 model GiftCard {
   id         String    @id @default(cuid())
   code       String    @unique
+  amount     Float?
+  currency   Currency  @default(INR)
   createdAt  DateTime  @default(now())
   expiresAt  DateTime
   redeemedAt DateTime? // Nullable to indicate it might not be redeemed
-  Customer   Customer? @relation(fields: [customerId], references: [id])
-  customerId String?
+}
+
+model Discount {
+  id                  String                @id @default(cuid())
+  code                String                @unique
+  name                String
+  description         String?
+  type                DiscountType
+  value               Float
+  startDate           DateTime
+  endDate             DateTime
+  usageLimit          Int?
+  usageCount          Int                   @default(0)
+  status              DiscountStatus        @default(DRAFT)
+  minimumOrderValue   Float?
+  eligibilityCriteria EligibilityCriteria[]
+  applyTo             ApplyTo?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  @@index([code])
+  @@index([status])
+  @@index([startDate, endDate])
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_SHIPPING
+  BUY_X_GET_Y
+}
+
+enum DiscountStatus {
+  DRAFT
+  SCHEDULED
+  ACTIVE
+  PAUSED
+  EXPIRED
+  ARCHIVED
+}
+
+enum EligibilityCriteria {
+  ALL
+  NEW_CUSTOMERS
+  RETURNING_CUSTOMERS
+  SPECIFIC_CUSTOMERS
+}
+
+enum ApplyTo {
+  ALL_PRODUCTS
+  SPECIFIC_PRODUCTS
+  SPECIFIC_COLLECTIONS
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }

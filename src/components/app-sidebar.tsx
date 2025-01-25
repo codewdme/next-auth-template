@@ -7,15 +7,12 @@ import {
   Command,
   // Frame,
   LifeBuoy,
-  Target,
   // Map,
   // PieChart,
   Send,
   LayoutDashboard,
   ShoppingBag,
-  ChartNoAxesColumn,
   CirclePercent,
-  BookImage,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -69,7 +66,7 @@ const data = {
           url: "/store/orders/drafts",
         },
         {
-          title: "Explorer",
+          title: "Abandoned Checkouts",
           url: "/store/orders/abandoned-checkouts",
         },
       ],
@@ -87,14 +84,14 @@ const data = {
           title: "Inventory",
           url: "/store/products/inventory",
         },
-        {
-          title: "Purchase Orders",
-          url: "/store/products/purchase-orders",
-        },
-        {
-          title: "Transfers",
-          url: "/store/products/transfers",
-        },
+        // {
+        //   title: "Purchase Orders",
+        //   url: "/store/products/purchase-orders",
+        // },
+        // {
+        //   title: "Transfers",
+        //   url: "/store/products/transfers",
+        // },
         {
           title: "Gift cards",
           url: "/store/products/gift-cards",
@@ -112,55 +109,55 @@ const data = {
         },
       ],
     },
-    {
-      title: "Content",
-      url: "/store/content",
-      icon: BookImage,
-      items: [
-        {
-          title: "Metaobjects",
-          url: "/store/content/meta-objects",
-        },
-        {
-          title: "Files",
-          url: "/store/content/files",
-        },
-        {
-          title: "Menus",
-          url: "/store/content/menus",
-        },
-      ],
-    },
-    {
-      title: "Analytics",
-      url: "/store/analytics",
-      icon: ChartNoAxesColumn,
-      items: [
-        {
-          title: "Reports",
-          url: "/store/analytics/reports",
-        },
-        {
-          title: "Live View",
-          url: "/store/analytics/live-view",
-        },
-      ],
-    },
-    {
-      title: "Marketing",
-      url: "/store/marketing",
-      icon: Target,
-      items: [
-        {
-          title: "Campaigns",
-          url: "/store/marketing/Campaigns",
-        },
-        {
-          title: "Automations",
-          url: "/store/marketing/automations",
-        },
-      ],
-    },
+    // {
+    //   title: "Content",
+    //   url: "/store/content",
+    //   icon: BookImage,
+    //   items: [
+    //     {
+    //       title: "Metaobjects",
+    //       url: "/store/content/meta-objects",
+    //     },
+    //     {
+    //       title: "Files",
+    //       url: "/store/content/files",
+    //     },
+    //     {
+    //       title: "Menus",
+    //       url: "/store/content/menus",
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "Analytics",
+    //   url: "/store/analytics",
+    //   icon: ChartNoAxesColumn,
+    //   items: [
+    //     {
+    //       title: "Reports",
+    //       url: "/store/analytics/reports",
+    //     },
+    //     {
+    //       title: "Live View",
+    //       url: "/store/analytics/live-view",
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "Marketing",
+    //   url: "/store/marketing",
+    //   icon: Target,
+    //   items: [
+    //     {
+    //       title: "Campaigns",
+    //       url: "/store/marketing/Campaigns",
+    //     },
+    //     {
+    //       title: "Automations",
+    //       url: "/store/marketing/automations",
+    //     },
+    //   ],
+    // },
     {
       title: "Discounts",
       url: "/store/discounts",
@@ -198,7 +195,10 @@ const data = {
   // ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  pathname,
+  ...props
+}: { pathname: string } & React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -220,10 +220,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={data.navMain} pathname={pathname} />
         {/* <NavProjects projects={data.projects} /> */}
         {/* add this later on */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavSecondary
+          items={data.navSecondary}
+          pathname={pathname}
+          className="mt-auto"
+        />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
